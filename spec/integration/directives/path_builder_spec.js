@@ -45,6 +45,28 @@ describe("RAML.Directives.pathBuilder", function() {
     });
   });
 
+  describe("a resource with multiple templated parameters", function() {
+    beforeEach(function() {
+      var segment = createPathSegment('/resource/{param1}/{param2}/{param3}', {
+        param1: fakeUriParameter(),
+        param2: fakeUriParameter(),
+        param3: fakeUriParameter()
+      });
+
+      scope = createPathBuilderScope([segment]);
+      el = compileTemplate('<path-builder></path-builder>', scope);
+    });
+
+    it("renders templated path segments as input fields", function() {
+      expect(el).toHaveText(/\/[\s\S]*resource[\s\S]*\/[\s\S]*\/[\s\S]*\//);
+
+      var inputs = el.find('input');
+      expect(inputs[0]).toHaveAttr('placeholder', 'param1');
+      expect(inputs[1]).toHaveAttr('placeholder', 'param2');
+      expect(inputs[2]).toHaveAttr('placeholder', 'param3');
+    });
+  });
+
   describe("a resource and a sub-resource with templated parameters that have the same name", function() {
     beforeEach(function() {
       var resource1 = createPathSegment('/{resource}', {
